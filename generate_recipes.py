@@ -95,7 +95,7 @@ def load_transcripts(path: str) -> List[Dict]:
     return data
 
 
-API_KEY = "sk-8ffc43e90b9d417a96c3e39597b5f2aa"
+API_KEY = ""
 INPUT_PATH = "transcript.jsonl"
 OUTPUT_PATH = "recipe_dataset.jsonl"
 
@@ -115,7 +115,7 @@ for item in tqdm(transcripts):
             "recipe_type": "video_recipe"
         })
 
-        time.sleep(1.2)  # 🔒 rate-limit safety
+        time.sleep(1.2)  
 
     except Exception as e:
         print(f"[ERROR] {item['video_id']}: {e}")
