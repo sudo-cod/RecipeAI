@@ -52,7 +52,6 @@ def load_finished_ids(path: str) -> set:
             try:
                 data = json.loads(line)
             except json.JSONDecodeError:
-                # 🔧 FIX: support old broken lines
                 try:
                     data = ast.literal_eval(line)
                 except Exception:
@@ -110,7 +109,6 @@ def main():
                     print(f"[EMPTY] {video_id}")
                     continue
 
-                # ✅ CORRECT JSONL WRITE (this is the key)
                 json.dump(
                     {video_id: transcript},
                     out,
