@@ -1,8 +1,38 @@
 # RecipeAI
+A Youtube cooking video summarizer.
+<img width="1101" height="525" alt="Screenshot 2026-04-19 at 01 55 28" src="https://github.com/user-attachments/assets/15d6e82a-c86b-4b71-9699-25b3781d2388" />
+
+## Motivation
+
+Millions of cooking videos are uploaded to YouTube and other platforms every day. As users save more and more video recipes, keeping track of them becomes nearly impossible. Unlike text‑based recipes, video content is not easily searchable, scannable, or comparable. This leads to several practical problems:
+
+- **Information overload** – You forget what recipes you have already seen or saved.
+- **Repetitive effort** – You have to re‑watch the same video to recall a single step or quantity.
+- **Lack of structure** – There is no standard format to compare ingredients or cooking times across different videos.
+
+The goal of this project is to solve these problems by converting long videos to clean recipes. 
+
+## Approach
+
+This module trains a language model to transform real‑world cooking video transcripts (from YouTube and similar platforms) into a **standardized, executable recipe format** containing:
+
+- Dish name  
+- Ingredient list  
+- Step‑by‑step instructions  
+- Summary / conclusion  
+
+Raw transcripts are highly colloquial, filled with disfluencies, off‑topic narration, and long‑context dependencies. Off‑the‑shelf LLMs often fail to produce stable structured outputs from such inputs. Manual annotation of “transcript → structured recipe” pairs is expensive and suffers from low consistency across annotators. Therefore, we adopt a **teacher‑student synthetic labeling approach**:
+
+- A **Teacher LLM** (external, more powerful) rewrites raw transcripts into high‑quality structured recipes.  
+- These synthetic input–output pairs are used as the training set for supervised fine‑tuning (SFT).
+
+This strategy rapidly scales the training dataset while explicitly enforcing the desired output format.
+
+- **Framework**: [Unsloth](https://github.com/unslothai/unsloth) – optimized for faster LoRA fine‑tuning with reduced memory usage.  
+- **Base model**: Llama series (Llama 2 / Llama 3).  
+- **Fine‑tuning method**: LoRA (Low‑Rank Adaptation) – parameter‑efficient and suitable for long‑context scenarios.  
+- **Objective**: Improve structured output stability, reduce hallucination of irrelevant narrative content, and maintain performance even with long transcripts.
+
+A fine‑tuned Llama model that reliably converts messy, spoken‑language cooking video transcripts into clean, searchable, and executable recipes — enabling users to build a personal, structured recipe library from any video they watch.
+
 Video Demo: https://www.youtube.com/watch?v=wmzBDZWGfv0
-
-本模块目标是提升模型对真实烹饪视频语料的理解与结构化能力，即从 YouTube 等平台的口语化转录文本中生成“可执行”的食谱输出（菜名、食材清单、步骤说明、总结结论等）。为适应该任务的指令格
-式，本模块采用 Unsloth 框架对 Llama 系列模型进行 LoRA 微调（SFT），使模型在长上下文场景下具备更稳定的结构化输出能力，并减少对无关叙事内容的误吸收。
-
-由于“转录文本 → 标准食谱”的人工标注成本高且一致性难以保证，本模块采用合成标注策略：利用外部大语言模型（Teacher LLM）将原始转录文本转写为高质量的结构化食谱，生成可用于监督微调的训
-练对（input-output pairs）。该策略能够快速扩展训练样本规模，并显式规定输出格式，从而提高后续学生模型（Student LLM）的结构化生成稳定性。
